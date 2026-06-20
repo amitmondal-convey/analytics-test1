@@ -41,7 +41,10 @@
 
     /* Update topbar breadcrumb */
     const bc = document.getElementById('topbar-breadcrumb');
-    if (bc) bc.textContent = PAGES[pageId].label;
+    if (bc) {
+      bc.textContent = PAGES[pageId].label;
+      document.querySelector('.topbar-title').textContent = 'Customer Engagement Analytics';
+    }
 
     /* scroll top */
     const content = document.querySelector('.page-content');
