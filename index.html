@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convey · Customer Engagement Analytics</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/tabler-icons.min.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">CX</div>
+      <div class="brand-name">Convey Analytics</div>
+      <div class="brand-sub">Customer Engagement Intelligence</div>
+    </div>
+
+    <div class="sidebar-filters">
+      <div class="filter-label">Company</div>
+      <select id="global-company" class="filter-select">
+        <option value="all">All companies</option>
+        <option value="Eversource">Eversource</option>
+        <option value="PG&E">PG&amp;E</option>
+        <option value="HECO">HECO</option>
+        <option value="Idaho Power">Idaho Power</option>
+        <option value="DTE Energy">DTE Energy</option>
+        <option value="MLGW">MLGW</option>
+      </select>
+      <div class="filter-label">Division</div>
+      <select id="global-division" class="filter-select">
+        <option value="all">All divisions</option>
+        <option value="Electric">Electric</option>
+        <option value="EPSS">EPSS</option>
+        <option value="Planned Maint.">Planned Maint.</option>
+        <option value="PSPS">PSPS</option>
+        <option value="Gas">Gas</option>
+        <option value="Regional">Regional</option>
+      </select>
+    </div>
+
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <!-- built by app.js -->
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="live-dot"></span>
+      Live · Last sync 2 min ago
+    </div>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────────────── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div>
+        <div class="topbar-title">Customer Engagement Analytics</div>
+        <div class="topbar-breadcrumb" id="topbar-breadcrumb">Overview</div>
+      </div>
+
+      <div class="topbar-spacer"></div>
+
+      <div class="time-pills">
+        <button class="time-pill active" data-period="today">Jun 15, 2026</button>
+        <button class="time-pill" data-period="week">Last 7 days</button>
+        <button class="time-pill" data-period="month">Last 30 days</button>
+      </div>
+
+      <div class="status-pill">
+        <span class="live-dot"></span>
+        <span>Live data</span>
+      </div>
+
+      <button class="topbar-btn">
+        <i class="ti ti-download"></i> Export
+      </button>
+    </header>
+
+    <!-- Page content -->
+    <main class="page-content">
+      <!-- page divs injected by app.js -->
+    </main>
+
+  </div><!-- /main -->
+
+</div><!-- /shell -->
+
+<!-- Data & modules -->
+<script src="js/data.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/pages/overview.js"></script>
+<script src="js/pages/campaigns.js"></script>
+<script src="js/pages/channels.js"></script>
+<script src="js/pages/equity.js"></script>
+<script src="js/pages/critical.js"></script>
+<script src="js/pages/outage.js"></script>
+<script src="js/pages/journey.js"></script>
+<script src="js/pages/health.js"></script>
+<script src="js/pages/insights.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
