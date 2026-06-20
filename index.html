@@ -12,7 +12,65 @@
 </head>
 <body>
 
-<div class="shell">
+<!-- ── Login Screen ───────────────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="lp-brand">
+    <canvas id="lp-canvas"></canvas>
+    <div class="lp-brand-inner">
+      <div class="lp-logo">
+        <div class="lp-logo-mark">CX</div>
+        <div class="lp-logo-text">
+          <div class="lp-logo-name">CONVEY</div>
+          <div class="lp-logo-sub">Analytics Platform</div>
+        </div>
+      </div>
+      <div class="lp-hero">
+        <div class="lp-hero-headline">Customer engagement<br>intelligence — live.</div>
+        <div class="lp-hero-body">Delivery analytics, equity compliance, and outage intelligence for utility operations teams.</div>
+      </div>
+      <div class="lp-stats">
+        <div class="lp-stat">
+          <div class="lp-stat-val">509,824</div>
+          <div class="lp-stat-lbl">messages in flight today</div>
+        </div>
+        <div class="lp-stat">
+          <div class="lp-stat-val">23</div>
+          <div class="lp-stat-lbl">active outage events</div>
+        </div>
+        <div class="lp-stat">
+          <div class="lp-stat-val">96.1%</div>
+          <div class="lp-stat-lbl">critical customer SLA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lp-form-panel">
+    <div class="lp-form-wrap">
+      <div class="lp-form-eyebrow">Authorized access only</div>
+      <div class="lp-form-title">Sign in</div>
+      <div class="lp-form-sub">Enter your work credentials to access your utility's dashboards.</div>
+      <form id="login-form" novalidate>
+        <div class="lp-field">
+          <label class="lp-label" for="lp-email">Work email</label>
+          <input class="lp-input" id="lp-email" type="email" placeholder="you@utility.com" autocomplete="email" />
+        </div>
+        <div class="lp-field">
+          <label class="lp-label" for="lp-password">Password</label>
+          <input class="lp-input" id="lp-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <div class="lp-error" id="lp-error">Enter your email and password to continue.</div>
+        <button class="lp-btn" id="lp-submit" type="submit">Sign in</button>
+      </form>
+      <div class="lp-forgot"><a href="#" onclick="return false">Forgot your password?</a></div>
+      <div class="lp-compliance">
+        Access is restricted to authorized utility staff.<br>
+        All sessions are logged for regulatory compliance (CPUC, FERC).
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="shell" id="app-shell" style="display:none">
 
   <!-- ── Sidebar ─────────────────────────────────────────────────── -->
   <aside class="sidebar">
