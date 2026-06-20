@@ -113,21 +113,154 @@
     });
   }
 
+  /* ── Login canvas animation ── */
+  function initLoginCanvas() {
+    const canvas = document.getElementById('lp-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const NODE_COUNT = 32;
+    const nodes = Array.from({ length: NODE_COUNT }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.0006,
+      vy: (Math.random() - 0.5) * 0.0006,
+      r: 1.5 + Math.random() * 2.5,
+      pulse: Math.random() * Math.PI * 2,
+    }));
+
+    let raf;
+    function draw() {
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      nodes.forEach(n => {
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 0 || n.x > 1) n.vx *= -1;
+        if (n.y < 0 || n.y > 1) n.vy *= -1;
+        n.pulse += 0.018;
+      });
+
+      /* edges */
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = (nodes[i].x - nodes[j].x) * W;
+          const dy = (nodes[i].y - nodes[j].y) * H;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 160) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x * W, nodes[i].y * H);
+            ctx.lineTo(nodes[j].x * W, nodes[j].y * H);
+            ctx.strokeStyle = `rgba(61,214,140,${0.18 * (1 - dist / 160)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      /* nodes */
+      nodes.forEach(n => {
+        const alpha = 0.5 + 0.5 * Math.sin(n.pulse);
+        ctx.beginPath();
+        ctx.arc(n.x * W, n.y * H, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(61,214,140,${0.4 + 0.4 * alpha})`;
+        ctx.fill();
+      });
+
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }
+
+  /* ── Login form logic ── */
+  function initLogin(onSuccess) {
+    const form    = document.getElementById('login-form');
+    const emailEl = document.getElementById('lp-email');
+    const passEl  = document.getElementById('lp-password');
+    const errEl   = document.getElementById('lp-error');
+    const btnEl   = document.getElementById('lp-submit');
+    if (!form) { onSuccess(); return; }
+
+    function showError(msg) {
+      errEl.textContent = msg;
+      errEl.classList.add('visible');
+    }
+    function clearError() {
+      errEl.classList.remove('visible');
+      emailEl.classList.remove('error');
+      passEl.classList.remove('error');
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      clearError();
+      const email = emailEl.value.trim();
+      const pass  = passEl.value;
+
+      if (!email) {
+        emailEl.classList.add('error');
+        showError('Work email is required.');
+        emailEl.focus();
+        return;
+      }
+      if (!email.includes('@')) {
+        emailEl.classList.add('error');
+        showError('Enter a valid email address.');
+        emailEl.focus();
+        return;
+      }
+      if (!pass) {
+        passEl.classList.add('error');
+        showError('Password is required.');
+        passEl.focus();
+        return;
+      }
+
+      btnEl.disabled = true;
+      btnEl.textContent = 'Signing in…';
+
+      /* Simulate auth delay */
+      setTimeout(() => {
+        const screen = document.getElementById('login-screen');
+        screen.classList.add('lp-fade-out');
+        setTimeout(() => {
+          screen.style.display = 'none';
+          onSuccess();
+        }, 450);
+      }, 700);
+    });
+  }
+
   /* Init */
   document.addEventListener('DOMContentLoaded', () => {
-    buildPageContainers();
-    buildNav();
+    initLoginCanvas();
 
-    /* Time pills */
-    document.querySelectorAll('.time-pill').forEach(pill => {
-      pill.addEventListener('click', () => setPeriod(pill.dataset.period));
+    initLogin(() => {
+      const shell = document.getElementById('app-shell');
+      if (shell) shell.style.display = '';
+
+      buildPageContainers();
+      buildNav();
+
+      /* Time pills */
+      document.querySelectorAll('.time-pill').forEach(pill => {
+        pill.addEventListener('click', () => setPeriod(pill.dataset.period));
+      });
+
+      /* Company filter */
+      const coSelect = document.getElementById('global-company');
+      if (coSelect) coSelect.addEventListener('change', e => setGlobalCompany(e.target.value));
+
+      /* Initial render */
+      navigateTo('overview');
     });
-
-    /* Company filter */
-    const coSelect = document.getElementById('global-company');
-    if (coSelect) coSelect.addEventListener('change', e => setGlobalCompany(e.target.value));
-
-    /* Initial render */
-    navigateTo('overview');
   });
 })();
