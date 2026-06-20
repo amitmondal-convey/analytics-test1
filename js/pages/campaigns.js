@@ -19,12 +19,11 @@ window.PageCampaigns = (function () {
     const tbody = document.getElementById('camp-tbody');
     if (!tbody) return;
     tbody.innerHTML = rows.length === 0
-      ? `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px">No campaigns match the current filters</td></tr>`
+      ? `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px">No campaigns match the current filters</td></tr>`
       : rows.map(r => `
         <tr>
           <td style="font-family:var(--font-mono);font-size:10px">${r.id}</td>
-          <td style="font-weight:500">${r.company}</td>
-          <td style="color:var(--text-secondary)">${r.division}</td>
+          <td style="font-weight:500">${r.division}</td>
           <td><span class="badge ${typeBadge(r.type)}">${r.type}</span></td>
           <td class="mono">${D.fmt(r.msgs)}</td>
           <td class="mono" style="color:${r.delivered >= 90 ? 'var(--pos)' : r.delivered >= 80 ? 'var(--warn)' : 'var(--neg)'}">${r.delivered}%</td>
@@ -57,7 +56,8 @@ window.PageCampaigns = (function () {
     }).join('');
   }
 
-  function render() {
+  function render(company) {
+    activeCompany = company || 'all';
     const el = document.getElementById('page-campaigns');
     el.innerHTML = `
       <div class="section-label">Campaign performance & intelligence</div>
@@ -157,15 +157,11 @@ window.PageCampaigns = (function () {
           ${['all','outage','psps','planned','billing','safety','general'].map(f =>
             `<button class="ctrl-btn${f === activeFilter ? ' active' : ''}" onclick="PageCampaigns.setFilter('${f}')">${f === 'all' ? 'All types' : f.charAt(0).toUpperCase() + f.slice(1)}</button>`
           ).join('')}
-          <span style="font-size:10px;color:var(--text-muted);margin-left:8px">Company:</span>
-          <select id="camp-co-filter" style="font-size:10px;padding:4px 8px;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:6px;color:var(--text-primary)" onchange="PageCampaigns.setCompany(this.value)">
-            <option value="all">All companies</option>
-            ${D.COMPANIES.map(c => `<option value="${c}">${c}</option>`).join('')}
-          </select>
+
         </div>
         <table class="tbl">
           <thead><tr>
-            <th>Campaign ID</th><th>Company</th><th>Division</th>
+            <th>Campaign ID</th><th>Division</th>
             <th>Type</th><th>Messages</th><th>Delivered</th><th>Engaged</th><th>Status</th>
           </tr></thead>
           <tbody id="camp-tbody"></tbody>

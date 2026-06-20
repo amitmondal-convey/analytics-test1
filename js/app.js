@@ -31,9 +31,9 @@
     const mod = PAGES[pageId].module();
     if (mod) {
       if (pageId === 'overview') {
-        mod.render(currentPeriod);
+        mod.render(currentPeriod, currentCompany);
       } else {
-        mod.render();
+        mod.render(currentCompany);
       }
     }
 
@@ -57,16 +57,13 @@
       pill.classList.toggle('active', pill.dataset.period === p);
     });
     if (currentPage === 'overview') {
-      window.PageOverview.render(p);
+      window.PageOverview.render(p, currentCompany);
     }
   }
 
   function setGlobalCompany(co) {
     currentCompany = co;
-    /* Re-render current page if it respects company filter */
-    if (['campaigns', 'channels', 'equity'].includes(currentPage)) {
-      navigateTo(currentPage);
-    }
+    navigateTo(currentPage);
   }
 
   /* Wire global click handlers */

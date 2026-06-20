@@ -3,8 +3,9 @@ window.PageOverview = (function () {
   const D = window.AppData;
   const C = window.Charts;
 
-  function render(period) {
-    const k = D.overviewKPIs[period];
+  function render(period, company) {
+    company = company || 'all';
+    const k = D.getOverviewKPIs(company, period);
     const el = document.getElementById('page-overview');
     el.innerHTML = `
       <div class="section-label">Executive summary · Jun 15, 2026</div>
@@ -113,24 +114,24 @@ window.PageOverview = (function () {
           <div class="card-hd">
             <div class="card-title">
               <i class="ti ti-building card-title-icon"></i>
-              Company & division performance
+              Division performance
             </div>
             <span class="badge badge-blue">Jun 15, 2026</span>
           </div>
           <table class="tbl">
             <thead><tr>
-              <th>Company</th><th>Division</th><th>Messages</th>
-              <th>Delivered</th><th>CARE %</th><th>Med %</th>
+              <th>Division</th><th>Messages</th>
+              <th>Delivered</th><th>CARE %</th><th>Med %</th><th>Score</th>
             </tr></thead>
             <tbody>
-              ${D.divisionPerf.slice(0, 6).map(r => `
+              ${D.getDivisionPerf(company).map(r => `
                 <tr>
-                  <td style="font-weight:500">${r.company}</td>
-                  <td style="color:var(--text-secondary)">${r.division}</td>
+                  <td style="font-weight:500">${r.division}</td>
                   <td class="mono">${D.fmt(r.msgs)}</td>
                   <td class="mono" style="color:${r.delivered >= 90 ? 'var(--pos)' : r.delivered >= 85 ? 'var(--warn)' : 'var(--neg)'}">${r.delivered}%</td>
                   <td class="mono">${r.care}%</td>
                   <td class="mono">${r.med}%</td>
+                  <td class="mono" style="color:${r.score >= 78 ? 'var(--pos)' : r.score >= 65 ? 'var(--warn)' : 'var(--neg)'}">${r.score}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -155,7 +156,7 @@ window.PageOverview = (function () {
             <div class="pulse-item warn">
               <div class="pulse-icon warn"><i class="ti ti-bolt" style="color:var(--warn)"></i></div>
               <div>
-                <div class="pulse-text"><strong>HECO CARE segment</strong> — 41% of PSPS-affected customers are CARE-enrolled. Voice channel used for only 18% despite landline prevalence.</div>
+                <div class="pulse-text"><strong>CARE segment channel gap</strong> — 41% of PSPS-affected customers are CARE-enrolled. Voice channel used for only 18% despite landline prevalence.</div>
                 <span class="pulse-act">Strategize → ↗</span>
               </div>
             </div>

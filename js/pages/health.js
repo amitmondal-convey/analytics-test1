@@ -27,8 +27,9 @@ window.PageHealth = (function () {
     el.innerHTML = html;
   }
 
-  function render() {
-    const h = D.healthScore;
+  function render(company) {
+    company = company || 'all';
+    const h = D.getHealthScore(company);
     const el = document.getElementById('page-health');
     el.innerHTML = `
       <div class="section-label">Engagement health & data quality intelligence</div>
@@ -92,23 +93,22 @@ window.PageHealth = (function () {
           <div class="card-hd">
             <div class="card-title">
               <i class="ti ti-chart-radar card-title-icon"></i>
-              Engagement health score by company
+              Engagement health score by division
             </div>
           </div>
           <table class="tbl">
             <thead><tr>
-              <th>Company</th><th>Score</th><th>Delivery</th>
-              <th>Engage</th><th>Equity</th><th>Data Q</th>
+              <th>Division</th><th>Score</th><th>Delivery</th>
+              <th>CARE %</th><th>Med %</th>
             </tr></thead>
             <tbody>
-              ${D.companyPerf.map(c => `
+              ${D.getDivisionPerf(company).map(d => `
                 <tr>
-                  <td style="font-weight:500">${c.name}</td>
-                  <td class="mono" style="font-weight:600;color:${c.score >= 75 ? 'var(--pos)' : c.score >= 65 ? 'var(--warn)' : 'var(--neg)'}">${c.score}</td>
-                  <td class="mono" style="color:${c.delivered >= 90 ? 'var(--pos)' : c.delivered >= 85 ? 'var(--warn)' : 'var(--neg)'}">${c.delivered}%</td>
-                  <td class="mono">${c.opened}%</td>
-                  <td class="mono">${c.equity}</td>
-                  <td class="mono">${c.dataQ}</td>
+                  <td style="font-weight:500">${d.division}</td>
+                  <td class="mono" style="font-weight:600;color:${d.score >= 75 ? 'var(--pos)' : d.score >= 65 ? 'var(--warn)' : 'var(--neg)'}">${d.score}</td>
+                  <td class="mono" style="color:${d.delivered >= 90 ? 'var(--pos)' : d.delivered >= 85 ? 'var(--warn)' : 'var(--neg)'}">${d.delivered}%</td>
+                  <td class="mono">${d.care}%</td>
+                  <td class="mono">${d.med}%</td>
                 </tr>
               `).join('')}
             </tbody>

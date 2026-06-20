@@ -2,7 +2,8 @@
 window.PageInsights = (function () {
   const D = window.AppData;
 
-  function render() {
+  function render(company) {
+    company = company || 'all';
     const el = document.getElementById('page-insights');
     el.innerHTML = `
       <div class="section-label">AI-generated strategic insights & recommendations</div>
@@ -64,7 +65,7 @@ window.PageInsights = (function () {
           <input
             id="ai-query-input"
             type="text"
-            placeholder="e.g. Which CARE customers in PG&E have not been reached in the last 30 days?"
+            placeholder="e.g. Which CARE customers have not been reached in the last 30 days?"
             style="flex:1;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:var(--radius-sm);color:var(--text-primary);font-size:12px;font-family:var(--font-body);outline:none"
             onfocus="this.style.borderColor='var(--brand)'"
             onblur="this.style.borderColor='var(--border-strong)'"

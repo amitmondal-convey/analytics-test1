@@ -99,28 +99,104 @@ window.AppData = (function () {
     email:  [88, 78, 62, 85, 80, 90],
   };
 
-  /* ── Company performance ─────────────────────────────────────────── */
-  const companyPerf = [
-    { name: 'Eversource', score: 82, delivered: 91.2, opened: 41, failed: 8.8,  equity: 68, dataQ: 88, trend: 'up',   messages: 112450, care: 22, med: 8  },
-    { name: 'Idaho Power', score: 79, delivered: 93.1, opened: 33, failed: 6.9,  equity: 71, dataQ: 82, trend: 'up',   messages: 29880, care: 14, med: 6   },
-    { name: 'HECO',        score: 71, delivered: 87.9, opened: 44, failed: 12.1, equity: 52, dataQ: 74, trend: 'up',   messages: 38220, care: 41, med: 19  },
-    { name: 'DTE Energy',  score: 68, delivered: 85.2, opened: 36, failed: 14.8, equity: 61, dataQ: 71, trend: 'flat', messages: 74600, care: 27, med: 11  },
-    { name: 'PG&E',        score: 61, delivered: 83.6, opened: 34, failed: 16.4, equity: 48, dataQ: 63, trend: 'down', messages: 136440, care: 31, med: 14 },
-    { name: 'MLGW',        score: 65, delivered: 86.4, opened: 31, failed: 13.6, equity: 58, dataQ: 69, trend: 'flat', messages: 38140, care: 35, med: 9  },
-  ];
+  /* ── Division performance — keyed by company ────────────────────────── */
+  const divisionPerfByCompany = {
+    'all': [
+      { division: 'Electric (Eversource)',    msgs: 87200,  delivered: 92.1, care: 19, med: 7,  score: 84 },
+      { division: 'Gas (Eversource)',         msgs: 18400,  delivered: 89.4, care: 28, med: 11, score: 78 },
+      { division: 'EPSS (PG&E)',             msgs: 72400,  delivered: 82.1, care: 31, med: 14, score: 61 },
+      { division: 'PSPS (PG&E)',             msgs: 14000,  delivered: 88.6, care: 38, med: 22, score: 64 },
+      { division: 'HECO_OUTAGE',             msgs: 24100,  delivered: 87.9, care: 41, med: 19, score: 68 },
+      { division: 'Memphis Electric (MLGW)', msgs: 28100,  delivered: 86.4, care: 35, med: 9,  score: 67 },
+    ],
+    'Eversource': [
+      { division: 'Electric',       msgs: 87200, delivered: 92.1, care: 19, med: 7,  score: 84 },
+      { division: 'Gas',            msgs: 18400, delivered: 89.4, care: 28, med: 11, score: 78 },
+      { division: 'Planned Maint.', msgs: 6850,  delivered: 93.8, care: 14, med: 5,  score: 88 },
+    ],
+    'PG&E': [
+      { division: 'EPSS',           msgs: 72400, delivered: 82.1, care: 31, med: 14, score: 61 },
+      { division: 'Gas Ops',        msgs: 28900, delivered: 85.3, care: 22, med: 9,  score: 68 },
+      { division: 'Planned Maint.', msgs: 21140, delivered: 94.4, care: 18, med: 11, score: 82 },
+      { division: 'PSPS',           msgs: 14000, delivered: 88.6, care: 38, med: 22, score: 64 },
+    ],
+    'HECO': [
+      { division: 'HECO_OUTAGE',   msgs: 24100, delivered: 87.9, care: 41, med: 19, score: 68 },
+      { division: 'HECO_PLANNED',  msgs: 9800,  delivered: 91.2, care: 29, med: 12, score: 76 },
+      { division: 'Maui Electric', msgs: 4320,  delivered: 85.4, care: 36, med: 15, score: 63 },
+    ],
+    'Idaho Power': [
+      { division: 'Regional',    msgs: 19200, delivered: 93.1, care: 14, med: 6, score: 81 },
+      { division: 'Idaho South', msgs: 7400,  delivered: 91.8, care: 18, med: 8, score: 79 },
+      { division: 'Nevada Ops',  msgs: 3280,  delivered: 89.6, care: 21, med: 9, score: 74 },
+    ],
+    'DTE Energy': [
+      { division: 'Electric East', msgs: 38200, delivered: 86.2, care: 28, med: 12, score: 70 },
+      { division: 'Electric West', msgs: 23400, delivered: 84.1, care: 25, med: 10, score: 65 },
+      { division: 'Gas',           msgs: 13000, delivered: 87.9, care: 21, med: 8,  score: 72 },
+    ],
+    'MLGW': [
+      { division: 'Memphis Electric', msgs: 28100, delivered: 86.4, care: 35, med: 9, score: 67 },
+      { division: 'Memphis Gas',      msgs: 10040, delivered: 87.1, care: 28, med: 7, score: 68 },
+    ],
+  };
 
-  /* ── Division performance ────────────────────────────────────────── */
-  const divisionPerf = [
-    { company: 'Eversource', division: 'Electric',       msgs: 112450, delivered: 91.2, care: 22, med: 8  },
-    { company: 'PG&E',       division: 'EPSS',           msgs: 92340,  delivered: 82.1, care: 31, med: 14 },
-    { company: 'PG&E',       division: 'Planned Maint.', msgs: 44100,  delivered: 94.4, care: 18, med: 11 },
-    { company: 'HECO',       division: 'HECO_OUTAGE',    msgs: 38220,  delivered: 87.9, care: 41, med: 19 },
-    { company: 'Idaho Power', division: 'Regional',      msgs: 29880,  delivered: 93.1, care: 14, med: 6  },
-    { company: 'DTE Energy', division: 'Electric East',  msgs: 51200,  delivered: 86.2, care: 28, med: 12 },
-    { company: 'DTE Energy', division: 'Electric West',  msgs: 23400,  delivered: 84.1, care: 25, med: 10 },
-    { company: 'MLGW',       division: 'Memphis Electric',msgs: 38140, delivered: 86.4, care: 35, med: 9  },
-    { company: 'PG&E',       division: 'PSPS',           msgs: 18200,  delivered: 88.6, care: 38, med: 22 },
-  ];
+  /* ── Overview KPIs — keyed by company then period ────────────────────── */
+  const companyKPIs = {
+    'all': overviewKPIs,
+    'Eversource': {
+      today: { totalMessages: 112450, deliveredRate: 91.2, equityReach: 68, activeCampaigns: 22, completedToday: 8,  careReached: 24740, medicalNotified: 8991,  lepCustomers: 6860,  lifeSupportAlerts: 421, criticalFacilities: 178 },
+      week:  { totalMessages: 680000, deliveredRate: 91.8, equityReach: 69, activeCampaigns: 54, completedToday: 46, careReached: 142000,medicalNotified: 51200, lepCustomers: 38000, lifeSupportAlerts: 2200,criticalFacilities: 950 },
+      month: { totalMessages: 2740000,deliveredRate: 92.4, equityReach: 70, activeCampaigns: 218,completedToday: 194,careReached: 574000,medicalNotified: 204800,lepCustomers: 151000,lifeSupportAlerts: 8800,criticalFacilities: 3800 },
+    },
+    'PG&E': {
+      today: { totalMessages: 136440, deliveredRate: 83.6, equityReach: 48, activeCampaigns: 38, completedToday: 14, careReached: 42300, medicalNotified: 19100, lepCustomers: 18200, lifeSupportAlerts: 680, criticalFacilities: 240 },
+      week:  { totalMessages: 820000, deliveredRate: 84.2, equityReach: 49, activeCampaigns: 94, completedToday: 80, careReached: 254000,medicalNotified: 114600,lepCustomers: 109200,lifeSupportAlerts: 4080,criticalFacilities: 1440 },
+      month: { totalMessages: 3280000,deliveredRate: 85.0, equityReach: 51, activeCampaigns: 376,completedToday: 336,careReached: 1016000,medicalNotified: 458000,lepCustomers: 436800,lifeSupportAlerts: 16320,criticalFacilities: 5760 },
+    },
+    'HECO': {
+      today: { totalMessages: 38220,  deliveredRate: 87.9, equityReach: 52, activeCampaigns: 18, completedToday: 7,  careReached: 15670, medicalNotified: 7260,  lepCustomers: 5200,  lifeSupportAlerts: 310, criticalFacilities: 98 },
+      week:  { totalMessages: 229000, deliveredRate: 88.4, equityReach: 53, activeCampaigns: 44, completedToday: 38, careReached: 94000, medicalNotified: 43600, lepCustomers: 31200, lifeSupportAlerts: 1860,criticalFacilities: 588 },
+      month: { totalMessages: 914000, deliveredRate: 89.1, equityReach: 55, activeCampaigns: 176,completedToday: 152,careReached: 376000,medicalNotified: 174400,lepCustomers: 124800,lifeSupportAlerts: 7440,criticalFacilities: 2352 },
+    },
+    'Idaho Power': {
+      today: { totalMessages: 29880,  deliveredRate: 93.1, equityReach: 71, activeCampaigns: 12, completedToday: 5,  careReached: 4180,  medicalNotified: 1792,  lepCustomers: 1290,  lifeSupportAlerts: 188, criticalFacilities: 62 },
+      week:  { totalMessages: 179000, deliveredRate: 93.6, equityReach: 72, activeCampaigns: 30, completedToday: 26, careReached: 25100, medicalNotified: 10752, lepCustomers: 7740,  lifeSupportAlerts: 1128,criticalFacilities: 372 },
+      month: { totalMessages: 714000, deliveredRate: 94.0, equityReach: 73, activeCampaigns: 120,completedToday: 104,careReached: 100400,medicalNotified: 43008, lepCustomers: 30960, lifeSupportAlerts: 4512,criticalFacilities: 1488 },
+    },
+    'DTE Energy': {
+      today: { totalMessages: 74600,  deliveredRate: 85.2, equityReach: 61, activeCampaigns: 28, completedToday: 10, careReached: 20140, medicalNotified: 8200,  lepCustomers: 5800,  lifeSupportAlerts: 282, criticalFacilities: 148 },
+      week:  { totalMessages: 448000, deliveredRate: 85.8, equityReach: 62, activeCampaigns: 68, completedToday: 58, careReached: 120840,medicalNotified: 49200, lepCustomers: 34800, lifeSupportAlerts: 1692,criticalFacilities: 888 },
+      month: { totalMessages: 1788000,deliveredRate: 86.4, equityReach: 63, activeCampaigns: 272,completedToday: 232,careReached: 483360,medicalNotified: 196800,lepCustomers: 139200,lifeSupportAlerts: 6768,criticalFacilities: 3552 },
+    },
+    'MLGW': {
+      today: { totalMessages: 38140,  deliveredRate: 86.4, equityReach: 58, activeCampaigns: 14, completedToday: 6,  careReached: 13350, medicalNotified: 3430,  lepCustomers: 2200,  lifeSupportAlerts: 223, criticalFacilities: 165 },
+      week:  { totalMessages: 229000, deliveredRate: 87.0, equityReach: 59, activeCampaigns: 34, completedToday: 28, careReached: 80100, medicalNotified: 20580, lepCustomers: 13200, lifeSupportAlerts: 1338,criticalFacilities: 990 },
+      month: { totalMessages: 914000, deliveredRate: 87.6, equityReach: 61, activeCampaigns: 136,completedToday: 112,careReached: 320400,medicalNotified: 82320, lepCustomers: 52800, lifeSupportAlerts: 5352,criticalFacilities: 3960 },
+    },
+  };
+
+  /* ── Health score — keyed by company ────────────────────────────────── */
+  const healthScoreByCompany = {
+    'all':         { overall: 74, delta: 3,  delivery: 89, engagement: 68, prefMatch: 71, equityReach: 61, dataQuality: 78 },
+    'Eversource':  { overall: 82, delta: 4,  delivery: 91, engagement: 72, prefMatch: 76, equityReach: 68, dataQuality: 88 },
+    'PG&E':        { overall: 61, delta: -2, delivery: 84, engagement: 58, prefMatch: 62, equityReach: 48, dataQuality: 63 },
+    'HECO':        { overall: 71, delta: 2,  delivery: 88, engagement: 66, prefMatch: 68, equityReach: 52, dataQuality: 74 },
+    'Idaho Power': { overall: 79, delta: 3,  delivery: 93, engagement: 71, prefMatch: 74, equityReach: 71, dataQuality: 82 },
+    'DTE Energy':  { overall: 68, delta: 1,  delivery: 85, engagement: 62, prefMatch: 65, equityReach: 61, dataQuality: 71 },
+    'MLGW':        { overall: 65, delta: -1, delivery: 86, engagement: 59, prefMatch: 63, equityReach: 58, dataQuality: 69 },
+  };
+
+  function getDivisionPerf(company) {
+    return divisionPerfByCompany[company] || divisionPerfByCompany['all'];
+  }
+  function getOverviewKPIs(company, period) {
+    const src = companyKPIs[company] || companyKPIs['all'];
+    return src[period] || src['today'];
+  }
+  function getHealthScore(company) {
+    return healthScoreByCompany[company] || healthScoreByCompany['all'];
+  }
 
   /* ── Campaign type performance ──────────────────────────────────── */
   const campaignTypePerf = {
@@ -520,7 +596,7 @@ window.AppData = (function () {
   return {
     COMPANIES, DIVISIONS, CAMPAIGN_TYPES, CHANNELS, SEGMENTS, LANGUAGES,
     overviewKPIs, trend7Days, trend30Days,
-    segmentDelivery, channelBySegment, companyPerf, divisionPerf,
+    segmentDelivery, channelBySegment, divisionPerfByCompany,
     campaignTypePerf, campaigns, channelOverall, channelFallback,
     optimalSendTime, heatmapData, languageMatchRate, billingDelivery,
     vulnerabilityScatter, criticalCustomers, pspsOverlap, criticalSlaData,
@@ -529,5 +605,6 @@ window.AppData = (function () {
     pspsZoneData, journeyFunnel, retryAttempts, optOutTrend, preferenceMismatch,
     healthScore, dataQuality, healthTrend, cohortData, insights,
     campaignVelocity, deliveryWaterfall, fmt, pct, segColor, companyColor,
+    getDivisionPerf, getOverviewKPIs, getHealthScore,
   };
 })();
