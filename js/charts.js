@@ -1,8 +1,8 @@
 /* ─── Chart helpers & theme ───────────────────────────────────────────── */
 window.Charts = (function () {
 
-  const gc = 'rgba(255,255,255,0.05)';
-  const tc = 'rgba(255,255,255,0.35)';
+  const gc = 'rgba(0,0,0,0.06)';
+  const tc = 'rgba(0,0,0,0.45)';
 
   const baseScales = {
     x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10, family: "'JetBrains Mono', monospace" } } },
@@ -13,11 +13,11 @@ window.Charts = (function () {
     responsive: true,
     maintainAspectRatio: false,
     plugins: { legend: { display: false }, tooltip: {
-      backgroundColor: '#1C2333',
-      borderColor: 'rgba(255,255,255,0.1)',
+      backgroundColor: '#FFFFFF',
+      borderColor: 'rgba(0,0,0,0.10)',
       borderWidth: 1,
-      titleColor: '#E8EAF0',
-      bodyColor: '#8B95A8',
+      titleColor: '#111827',
+      bodyColor: '#4B5563',
       titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
       bodyFont: { family: "'Inter', sans-serif", size: 10 },
       padding: 10,
