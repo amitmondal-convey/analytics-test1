@@ -1617,14 +1617,13 @@ function showNext() {
   const nextMsg = MSGS[nextIdx];
   const useTyping = nextMsg.sender === 'utility' && nextMsg.type !== 'timeskip';
 
-  document.getElementById('next-btn').disabled = true;
-
   if (useTyping) {
     showTyping();
+    clearTimeout(typingTimer);
     typingTimer = setTimeout(() => {
       removeTyping();
       showMsgAtIndex(nextIdx);
-    }, 420);
+    }, 380);
   } else {
     showMsgAtIndex(nextIdx);
   }
@@ -1678,12 +1677,8 @@ function resetDemo() {
   removeTyping();
   currentStep = -1;
   document.getElementById('thread').innerHTML = '';
-  document.getElementById('progress-fill').style.width = '0%';
   setGlow('rgba(21,101,192,0.15)');
   highlightFeatures([]);
-  buildDots();
-  updateNarrator(-1);
-  updateCurrentNarr(null);
   updateControls();
 }
 
