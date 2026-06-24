@@ -1671,10 +1671,7 @@ function updateControls() {
   if (counter) counter.textContent = (currentStep + 1) + ' / ' + MSGS.length;
 }
 
-function updateProgress(shown) {
-  const pct = Math.round((shown / MSGS.length) * 100);
-  document.getElementById('progress-fill').style.width = pct + '%';
-}
+function updateProgress() {}
 
 function resetDemo() {
   clearTimeout(typingTimer);
