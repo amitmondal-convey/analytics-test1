@@ -1154,6 +1154,13 @@ body {
 
   </div>
 
+  <!-- Navigation buttons -->
+  <div id="nav-controls" style="display:flex;align-items:center;gap:16px;margin-top:20px;z-index:10;position:relative">
+    <button id="prev-btn" onclick="showPrev()" style="padding:12px 28px;border-radius:28px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);color:#D1D5DB;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">← Back</button>
+    <div id="step-counter" style="font-size:13px;color:#6B7280;min-width:60px;text-align:center">0 / 11</div>
+    <button id="next-btn" onclick="showNext()" style="padding:12px 32px;border-radius:28px;border:none;background:#0F6E56;color:white;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 18px rgba(15,110,86,0.45)">Next →</button>
+  </div>
+
 </div>
 
 <script>
@@ -1662,7 +1669,12 @@ function showPrev() {
 function updateCurrentNarr() {}
 
 function updateControls() {
-  // no visible controls — navigation via click / keyboard only
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const counter = document.getElementById('step-counter');
+  if (prevBtn) prevBtn.disabled = currentStep < 0;
+  if (nextBtn) nextBtn.disabled = currentStep >= MSGS.length - 1;
+  if (counter) counter.textContent = (currentStep + 1) + ' / ' + MSGS.length;
 }
 
 function updateProgress(shown) {
@@ -1726,11 +1738,7 @@ document.addEventListener('DOMContentLoaded', () => {
   fitPhone();
   window.addEventListener('resize', fitPhone);
 
-  // Click anywhere to advance
-  document.addEventListener('click', e => {
-    if (e.target.closest('button.rca-btn')) return;
-    showNext();
-  });
+  updateControls();
 
   // window listener catches keys regardless of focus state
   window.addEventListener('keydown', e => {
