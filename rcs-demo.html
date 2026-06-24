@@ -16,21 +16,18 @@
   --muted:     #6B7280;
 }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-}
+html, body { height: 100%; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24px 20px 16px;
-  overflow: hidden;
+  padding: 24px 20px 24px;
+  overflow-x: hidden;
 }
 
 /* ── Header ── */
@@ -105,22 +102,19 @@ body {
 
 /* ── Stage ── */
 .demo-stage {
-  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
-  overflow: hidden;
 }
 
 .phone-stage {
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
 .phone-wrap {
-  transform-origin: center center;
+  flex-shrink: 0;
 }
 
 /* ── Narrator panel ── */
@@ -1717,18 +1711,17 @@ function handleAction(action) {
 // ── Phone sizing ─────────────────────────────────────────────────────────────
 function fitPhone() {
   const headerEl = document.querySelector('.page-header');
-  const headerH = headerEl ? headerEl.offsetHeight + 40 : 160;
+  const navEl = document.getElementById('nav-controls');
+  const headerH = (headerEl ? headerEl.offsetHeight : 120) + (navEl ? navEl.offsetHeight + 20 : 60) + 48;
   const availH = window.innerHeight - headerH;
   const availW = window.innerWidth - 48;
   const scaleH = availH / 688;
   const scaleW = availW / 318;
-  const scale = Math.min(scaleH, scaleW, 2.4);
+  const scale = Math.min(scaleH, scaleW, 2.2);
   const wrap = document.querySelector('.phone-wrap');
   if (wrap) {
-    wrap.style.transform = `scale(${scale})`;
-    // Expand wrapper so scaled phone doesn't overlap other content
-    wrap.style.width = Math.round(318 * scale) + 'px';
-    wrap.style.height = Math.round(688 * scale) + 'px';
+    // zoom affects layout naturally — no clipping, no transform-origin issues
+    wrap.style.zoom = scale;
   }
 }
 
