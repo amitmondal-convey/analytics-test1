@@ -16,18 +16,21 @@
   --muted:     #6B7280;
 }
 
-html, body { height: 100%; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 36px 20px 48px;
-  overflow-x: hidden;
+  padding: 24px 20px 16px;
+  overflow: hidden;
 }
 
 /* ── Header ── */
@@ -35,8 +38,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 36px;
+  gap: 8px;
+  margin-bottom: 16px;
   text-align: center;
 }
 
@@ -102,20 +105,22 @@ body {
 
 /* ── Stage ── */
 .demo-stage {
+  flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 32px;
+  justify-content: center;
   width: 100%;
-  max-width: 900px;
+  overflow: hidden;
 }
 
 .phone-stage {
   display: flex;
-  align-items: flex-start;
-  gap: 40px;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+}
+
+.phone-wrap {
+  transform-origin: center center;
 }
 
 /* ── Narrator panel ── */
@@ -178,10 +183,6 @@ body {
 }
 
 /* ── Phone frame ── */
-.phone-wrap {
-  position: relative;
-  flex-shrink: 0;
-}
 
 .phone-glow {
   position: absolute;
@@ -1041,6 +1042,9 @@ body {
 }
 </style>
 
+<!-- Hidden element that grabs keyboard focus immediately on page load -->
+<div id="kbfocus" tabindex="0" autofocus style="position:fixed;width:1px;height:1px;opacity:0;top:0;left:0;outline:none;pointer-events:none"></div>
+
 <div class="page-header">
   <div class="convey-brand">
     <div class="convey-mark">CX</div>
@@ -1698,13 +1702,29 @@ function handleAction(action) {
   }
 }
 
+// ── Phone sizing ─────────────────────────────────────────────────────────────
+function fitPhone() {
+  const headerEl = document.querySelector('.page-header');
+  const headerH = headerEl ? headerEl.offsetHeight + 40 : 160;
+  const availH = window.innerHeight - headerH;
+  const availW = window.innerWidth - 48;
+  const scaleH = availH / 688;
+  const scaleW = availW / 318;
+  const scale = Math.min(scaleH, scaleW, 2.4);
+  const wrap = document.querySelector('.phone-wrap');
+  if (wrap) {
+    wrap.style.transform = `scale(${scale})`;
+    // Expand wrapper so scaled phone doesn't overlap other content
+    wrap.style.width = Math.round(318 * scale) + 'px';
+    wrap.style.height = Math.round(688 * scale) + 'px';
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   setGlow('rgba(21,101,192,0.15)');
-
-  // Auto-focus so keyboard works immediately without needing a click first
-  document.body.setAttribute('tabindex', '-1');
-  document.body.focus();
+  fitPhone();
+  window.addEventListener('resize', fitPhone);
 
   // Click anywhere to advance
   document.addEventListener('click', e => {
@@ -1712,9 +1732,8 @@ document.addEventListener('DOMContentLoaded', () => {
     showNext();
   });
 
-  // Use window so key events fire regardless of which element has focus
+  // window listener catches keys regardless of focus state
   window.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       showNext();
