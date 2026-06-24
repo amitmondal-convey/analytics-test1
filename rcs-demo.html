@@ -526,6 +526,7 @@ body {
   transition: transform 0.15s;
 }
 
+.video-card { cursor: pointer; }
 .video-card:hover .video-play { transform: scale(1.1); }
 
 .video-card-info {
@@ -1458,16 +1459,19 @@ function renderRichCard(card, sender) {
 }
 
 function renderVideoCard(card) {
-  return `<div class="video-card">
-    <div class="video-thumb">
-      <img src="data:image/svg+xml,${encodeURIComponent(card.image)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;"/>
-      <div class="video-play" style="position:absolute">▶</div>
+  const videoUrl = card.url || 'https://www.youtube.com/results?search_query=street+light+maintenance+utility';
+  return `<a href="${videoUrl}" target="_blank" rel="noopener" style="text-decoration:none;display:block">
+    <div class="video-card">
+      <div class="video-thumb">
+        <img src="data:image/svg+xml,${encodeURIComponent(card.image)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+        <div class="video-play" style="position:absolute">▶</div>
+      </div>
+      <div class="video-card-info">
+        <div class="video-card-title">${card.title}</div>
+        <div class="video-card-meta">${card.meta}</div>
+      </div>
     </div>
-    <div class="video-card-info">
-      <div class="video-card-title">${card.title}</div>
-      <div class="video-card-meta">${card.meta}</div>
-    </div>
-  </div>`;
+  </a>`;
 }
 
 function renderTicketCard(ticket) {
