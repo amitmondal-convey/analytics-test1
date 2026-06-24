@@ -1150,9 +1150,9 @@ body {
 
   <!-- Navigation buttons -->
   <div id="nav-controls" style="display:flex;align-items:center;gap:16px;margin-top:20px;z-index:10;position:relative">
-    <button id="prev-btn" onclick="showPrev()" style="padding:12px 28px;border-radius:28px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);color:#D1D5DB;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">← Back</button>
+    <button id="prev-btn" style="padding:12px 28px;border-radius:28px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);color:#D1D5DB;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">← Back</button>
     <div id="step-counter" style="font-size:13px;color:#6B7280;min-width:60px;text-align:center">0 / 11</div>
-    <button id="next-btn" onclick="showNext()" style="padding:12px 32px;border-radius:28px;border:none;background:#0F6E56;color:white;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 18px rgba(15,110,86,0.45)">Next →</button>
+    <button id="next-btn" style="padding:12px 32px;border-radius:28px;border:none;background:#0F6E56;color:white;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 18px rgba(15,110,86,0.45)">Next →</button>
   </div>
 
 </div>
@@ -1590,115 +1590,46 @@ function updateDots() {}
 
 // ── Playback ─────────────────────────────────────────────────────────────────
 
-let typingTimer = null;
-
 function showMsgAtIndex(idx) {
   const msg = MSGS[idx];
   if (!msg) return;
   const thread = document.getElementById('thread');
-  const existing = thread.querySelector(`[data-id="${msg.id}"]`);
-  if (existing) return;
+  if (thread.querySelector('[data-id="' + msg.id + '"]')) return;
   const el = buildMessageEl(msg);
   thread.appendChild(el);
   thread.scrollTop = thread.scrollHeight;
   if (msg.glow) setGlow(msg.glow);
   if (msg.features) highlightFeatures(msg.features);
-  if (msg.narr) updateNarrator(msg.id);
-  updateDots(msg.id);
-  updateProgress(idx + 1);
   currentStep = idx;
-  updateCurrentNarr(msg);
   updateControls();
 }
 
 function showNext() {
-  const nextIdx = currentStep + 1;
-  if (nextIdx >= MSGS.length) return;
-  const nextMsg = MSGS[nextIdx];
-  const useTyping = nextMsg.sender === 'utility' && nextMsg.type !== 'timeskip';
-
-  if (useTyping) {
-    showTyping();
-    clearTimeout(typingTimer);
-    typingTimer = setTimeout(() => {
-      removeTyping();
-      showMsgAtIndex(nextIdx);
-    }, 380);
-  } else {
-    showMsgAtIndex(nextIdx);
-  }
+  const next = currentStep + 1;
+  if (next < MSGS.length) showMsgAtIndex(next);
 }
 
 function showPrev() {
   if (currentStep < 0) return;
-  clearTimeout(typingTimer);
-  removeTyping();
-
   const thread = document.getElementById('thread');
-  const lastEl = thread.querySelector(`[data-id="${MSGS[currentStep].id}"]`);
-  if (lastEl) lastEl.remove();
-
+  const last = thread.querySelector('[data-id="' + MSGS[currentStep].id + '"]');
+  if (last) last.remove();
   currentStep -= 1;
-
-  if (currentStep >= 0) {
-    const prevMsg = MSGS[currentStep];
-    if (prevMsg.glow) setGlow(prevMsg.glow);
-    if (prevMsg.features) highlightFeatures(prevMsg.features);
-    if (prevMsg.narr) updateNarrator(prevMsg.id);
-    updateDots(prevMsg.id);
-    updateProgress(currentStep + 1);
-    updateCurrentNarr(prevMsg);
-  } else {
-    setGlow('rgba(21,101,192,0.15)');
-    highlightFeatures([]);
-    updateNarrator(-1);
-    buildDots();
-    updateProgress(0);
-    updateCurrentNarr(null);
-  }
+  if (currentStep >= 0 && MSGS[currentStep].glow) setGlow(MSGS[currentStep].glow);
+  else setGlow('rgba(21,101,192,0.15)');
   updateControls();
 }
-
-function updateCurrentNarr() {}
 
 function updateControls() {
-  const prevBtn = document.getElementById('prev-btn');
-  const nextBtn = document.getElementById('next-btn');
-  const counter = document.getElementById('step-counter');
-  if (prevBtn) prevBtn.disabled = currentStep < 0;
-  if (nextBtn) nextBtn.disabled = currentStep >= MSGS.length - 1;
-  if (counter) counter.textContent = (currentStep + 1) + ' / ' + MSGS.length;
+  const prev = document.getElementById('prev-btn');
+  const next = document.getElementById('next-btn');
+  const ctr  = document.getElementById('step-counter');
+  if (prev) prev.disabled = currentStep < 0;
+  if (next) next.disabled = currentStep >= MSGS.length - 1;
+  if (ctr)  ctr.textContent = (currentStep + 1) + ' / ' + MSGS.length;
 }
 
-function updateProgress() {}
-
-function resetDemo() {
-  clearTimeout(typingTimer);
-  removeTyping();
-  currentStep = -1;
-  document.getElementById('thread').innerHTML = '';
-  setGlow('rgba(21,101,192,0.15)');
-  highlightFeatures([]);
-  updateControls();
-}
-
-function jumpToMsg(id) {
-  clearTimeout(typingTimer);
-  removeTyping();
-  const thread = document.getElementById('thread');
-  thread.innerHTML = '';
-  currentStep = -1;
-  const idx = MSGS.findIndex(m => m.id === id);
-  for (let i = 0; i <= idx; i++) showMsgAtIndex(i);
-  updateControls();
-}
-
-function handleAction(action) {
-  if (action.includes('Close Case') && currentStep >= 7) {
-    const idx9 = MSGS.findIndex(m => m.id === 9);
-    if (currentStep < idx9) jumpToMsg(9);
-  }
-}
+function handleAction() {}
 
 // ── Phone sizing ─────────────────────────────────────────────────────────────
 function fitPhone() {
@@ -1722,10 +1653,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setGlow('rgba(21,101,192,0.15)');
   fitPhone();
   window.addEventListener('resize', fitPhone);
-
   updateControls();
 
-  // window listener catches keys regardless of focus state
+  document.getElementById('next-btn').addEventListener('click', showNext);
+  document.getElementById('prev-btn').addEventListener('click', showPrev);
+
   window.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
