@@ -1702,13 +1702,18 @@ function handleAction(action) {
 document.addEventListener('DOMContentLoaded', () => {
   setGlow('rgba(21,101,192,0.15)');
 
+  // Auto-focus so keyboard works immediately without needing a click first
+  document.body.setAttribute('tabindex', '-1');
+  document.body.focus();
+
   // Click anywhere to advance
   document.addEventListener('click', e => {
-    if (e.target.closest('button.rca-btn')) return; // don't intercept card action buttons
+    if (e.target.closest('button.rca-btn')) return;
     showNext();
   });
 
-  document.addEventListener('keydown', e => {
+  // Use window so key events fire regardless of which element has focus
+  window.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
