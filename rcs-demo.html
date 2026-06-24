@@ -1057,11 +1057,6 @@ body {
 <div class="demo-stage">
   <div class="phone-stage">
 
-    <!-- Left: timeline/narrator -->
-    <div class="narrator-panel" id="narrator-panel">
-      <!-- filled by JS -->
-    </div>
-
     <!-- Phone -->
     <div class="phone-wrap">
       <div class="phone-glow" id="phone-glow"></div>
@@ -1153,43 +1148,8 @@ body {
       </div>
     </div>
 
-    <!-- Right: empty space for balance on large screens -->
-    <div style="width:200px" class="hide-mobile"></div>
-
   </div>
 
-  <!-- Progress -->
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill"></div>
-  </div>
-
-  <!-- Controls -->
-  <div class="controls-wrap">
-    <div class="step-dots" id="step-dots"></div>
-    <div class="controls-row">
-      <button class="nav-btn prev-btn" id="prev-btn" disabled>← Prev</button>
-      <div class="step-counter" id="step-counter">0 / 11</div>
-      <button class="nav-btn next-btn" id="next-btn">Next →</button>
-    </div>
-    <div class="current-narr" id="current-narr" style="display:none">
-      <div class="current-narr-title" id="current-narr-title"></div>
-      <div class="current-narr-sub" id="current-narr-sub"></div>
-    </div>
-    <button class="reset-btn" id="reset-btn">↺ Reset</button>
-    <div class="kbd-hint">Use <kbd>Enter</kbd> <kbd>→</kbd> or <kbd>Space</kbd> for next &nbsp;·&nbsp; <kbd>←</kbd> for previous</div>
-  </div>
-
-  <!-- Feature pills -->
-  <div class="features" id="features">
-    <div class="feat-pill" data-feat="verified"><div class="feat-pill-dot"></div>Verified Sender</div>
-    <div class="feat-pill" data-feat="rich-cards"><div class="feat-pill-dot"></div>Rich Cards</div>
-    <div class="feat-pill" data-feat="video"><div class="feat-pill-dot"></div>Rich Media</div>
-    <div class="feat-pill" data-feat="two-way"><div class="feat-pill-dot"></div>2-Way Conversation</div>
-    <div class="feat-pill" data-feat="media"><div class="feat-pill-dot"></div>Customer Media Sharing</div>
-    <div class="feat-pill" data-feat="ticket"><div class="feat-pill-dot"></div>System Integration</div>
-    <div class="feat-pill" data-feat="actions"><div class="feat-pill-dot"></div>Action Buttons</div>
-    <div class="feat-pill" data-feat="closure"><div class="feat-pill-dot"></div>Case Closure</div>
-  </div>
 </div>
 
 <script>
@@ -1616,48 +1576,12 @@ function setGlow(color) {
 }
 
 // ── Narrator ─────────────────────────────────────────────────────────────────
-let narratorBuilt = false;
-
-function buildNarrator() {
-  const panel = document.getElementById('narrator-panel');
-  panel.innerHTML = NARR_STEPS.map((m, i) => `
-    <div class="narr-item" data-narr="${i}" onclick="jumpToMsg(${m.id})">
-      <div>
-        <div class="narr-item-title">${m.narr.title}</div>
-        <div class="narr-item-sub">${m.narr.sub}</div>
-      </div>
-    </div>
-  `).join('');
-  narratorBuilt = true;
-}
-
-function updateNarrator(msgId) {
-  const idx = NARR_STEPS.findIndex(m => m.id === msgId);
-  document.querySelectorAll('.narr-item').forEach((el, i) => {
-    el.classList.remove('active', 'done');
-    if (i < idx) el.classList.add('done');
-    else if (i === idx) el.classList.add('active');
-  });
-}
+function buildNarrator() {}
+function updateNarrator() {}
 
 // ── Step dots ────────────────────────────────────────────────────────────────
-function buildDots() {
-  const container = document.getElementById('step-dots');
-  const contentMsgs = MSGS.filter(m => m.type !== 'timeskip' && m.type !== 'status-banner');
-  container.innerHTML = contentMsgs.map((m, i) =>
-    `<div class="step-dot" data-msg="${m.id}" onclick="jumpToMsg(${m.id})"></div>`
-  ).join('');
-}
-
-function updateDots(activeId) {
-  const contentMsgs = MSGS.filter(m => m.type !== 'timeskip' && m.type !== 'status-banner');
-  document.querySelectorAll('.step-dot').forEach((dot, i) => {
-    const msgId = contentMsgs[i].id;
-    dot.classList.remove('active', 'done');
-    if (msgId < activeId) dot.classList.add('done');
-    else if (msgId === activeId) dot.classList.add('active');
-  });
-}
+function buildDots() {}
+function updateDots() {}
 
 // ── Playback ─────────────────────────────────────────────────────────────────
 
@@ -1731,34 +1655,10 @@ function showPrev() {
   updateControls();
 }
 
-function updateCurrentNarr(msg) {
-  const card = document.getElementById('current-narr');
-  const title = document.getElementById('current-narr-title');
-  const sub = document.getElementById('current-narr-sub');
-
-  // Walk back to find a msg with narr if current msg has none
-  let narrMsg = msg;
-  if (msg && !msg.narr) {
-    // find most recent narr in shown msgs
-    for (let i = currentStep; i >= 0; i--) {
-      if (MSGS[i].narr) { narrMsg = MSGS[i]; break; }
-    }
-  }
-
-  if (narrMsg && narrMsg.narr) {
-    title.textContent = narrMsg.narr.title;
-    sub.textContent = narrMsg.narr.sub;
-    card.style.display = '';
-  } else {
-    card.style.display = 'none';
-  }
-}
+function updateCurrentNarr() {}
 
 function updateControls() {
-  document.getElementById('prev-btn').disabled = currentStep < 0;
-  document.getElementById('next-btn').disabled = currentStep >= MSGS.length - 1;
-  const shown = currentStep + 1;
-  document.getElementById('step-counter').textContent = shown + ' / ' + MSGS.length;
+  // no visible controls — navigation via click / keyboard only
 }
 
 function updateProgress(shown) {
@@ -1800,14 +1700,13 @@ function handleAction(action) {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  buildDots();
-  buildNarrator();
   setGlow('rgba(21,101,192,0.15)');
-  updateControls();
 
-  document.getElementById('next-btn').addEventListener('click', showNext);
-  document.getElementById('prev-btn').addEventListener('click', showPrev);
-  document.getElementById('reset-btn').addEventListener('click', resetDemo);
+  // Click anywhere to advance
+  document.addEventListener('click', e => {
+    if (e.target.closest('button.rca-btn')) return; // don't intercept card action buttons
+    showNext();
+  });
 
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
