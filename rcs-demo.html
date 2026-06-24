@@ -1,0 +1,1823 @@
+<title>RCS Demo — Pacific Power × Convey</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #07090F;
+  --surface:   #0E1219;
+  --border:    rgba(255,255,255,0.07);
+  --convey:    #0F6E56;
+  --convey-lt: #1A9470;
+  --pp-blue:   #1565C0;
+  --pp-lt:     #1E88E5;
+  --amber:     #D97706;
+  --green:     #059669;
+  --text:      #F0F0F2;
+  --muted:     #6B7280;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 20px 48px;
+  overflow-x: hidden;
+}
+
+/* ── Header ── */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.convey-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--convey-lt);
+  opacity: 0.85;
+}
+
+.convey-mark {
+  width: 24px; height: 24px;
+  background: var(--convey);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: white; letter-spacing: 0.04em;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #F0F0F2;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
+.rcs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(21,101,192,0.15);
+  border: 1px solid rgba(21,101,192,0.35);
+  color: #90CAF9;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.rcs-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #42A5F5;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ── Stage ── */
+.demo-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.phone-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Narrator panel ── */
+.narrator {
+  width: 240px;
+  flex-shrink: 0;
+  padding-top: 80px;
+}
+
+.narrator-step {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeInUp 0.4s ease;
+}
+.narrator-step.visible { display: flex; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.narrator-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--convey-lt);
+}
+
+.narrator-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #E5E7EB;
+  line-height: 1.3;
+}
+
+.narrator-body {
+  font-size: 12px;
+  color: #9CA3AF;
+  line-height: 1.6;
+}
+
+.narrator-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.narrator-feat {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  background: rgba(15,110,86,0.15);
+  border: 1px solid rgba(15,110,86,0.3);
+  color: #6EE7B7;
+  letter-spacing: 0.04em;
+}
+
+/* ── Phone frame ── */
+.phone-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.phone-glow {
+  position: absolute;
+  inset: -40px;
+  border-radius: 80px;
+  background: radial-gradient(ellipse at center, var(--glow-color, rgba(21,101,192,0.25)) 0%, transparent 70%);
+  transition: background 1.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.phone {
+  position: relative;
+  z-index: 1;
+  width: 318px;
+  height: 688px;
+  background: linear-gradient(160deg, #2A2A2C 0%, #1A1A1C 40%, #111113 100%);
+  border-radius: 54px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px #000,
+    0 60px 100px rgba(0,0,0,0.7),
+    0 30px 50px rgba(0,0,0,0.5);
+}
+
+/* Side buttons */
+.phone-btn-vol {
+  position: absolute;
+  left: -3px;
+  top: 138px;
+  width: 3px;
+  background: linear-gradient(180deg, #3A3A3C, #2A2A2C);
+  border-radius: 2px 0 0 2px;
+  height: 36px;
+  box-shadow: 0 50px 0 currentColor, 0 96px 0 currentColor;
+}
+
+.phone-btn-power {
+  position: absolute;
+  right: -3px;
+  top: 160px;
+  width: 3px;
+  height: 64px;
+  background: linear-gradient(180deg, #3A3A3C, #2A2A2C);
+  border-radius: 0 2px 2px 0;
+}
+
+.phone-screen {
+  position: absolute;
+  top: 10px; left: 4px; right: 4px; bottom: 10px;
+  background: #F2F2F7;
+  border-radius: 47px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 36px;
+  background: #0A0A0B;
+  border-radius: 20px;
+  z-index: 20;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+/* ── Status bar ── */
+.status-bar {
+  height: 56px;
+  padding: 18px 26px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1C1C1E;
+  letter-spacing: -0.01em;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-icons svg { color: #1C1C1E; }
+
+/* ── Chat header ── */
+.chat-header {
+  background: rgba(242,242,247,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid rgba(0,0,0,0.10);
+  padding: 6px 14px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.chat-back {
+  font-size: 22px;
+  color: var(--pp-blue);
+  line-height: 1;
+  padding-right: 2px;
+}
+
+.chat-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1.5px rgba(21,101,192,0.25);
+}
+
+.chat-info { flex: 1; min-width: 0; }
+
+.chat-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1C1C1E;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chat-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #1565C0;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.chat-verified-icon {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #1565C0;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-sub {
+  font-size: 10px;
+  color: #8E8E93;
+  margin-top: 1px;
+}
+
+.chat-video-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(21,101,192,0.1);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--pp-blue);
+}
+
+/* ── Thread ── */
+.thread {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 10px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  scroll-behavior: smooth;
+}
+
+.thread::-webkit-scrollbar { width: 3px; }
+.thread::-webkit-scrollbar-track { background: transparent; }
+.thread::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
+
+/* ── Message animations ── */
+.msg-row {
+  display: flex;
+  flex-direction: column;
+  animation: msgIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: scale(0.85) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.msg-row.from-utility { align-items: flex-start; }
+.msg-row.from-customer { align-items: flex-end; }
+
+/* ── Text bubbles ── */
+.bubble {
+  max-width: 220px;
+  padding: 9px 13px;
+  border-radius: 18px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.from-utility .bubble {
+  background: var(--pp-blue);
+  color: white;
+  border-bottom-left-radius: 4px;
+}
+
+.from-customer .bubble {
+  background: #E9E9EB;
+  color: #1C1C1E;
+  border-bottom-right-radius: 4px;
+}
+
+.from-customer.button-reply .bubble {
+  background: #DCF8C6;
+  color: #1C1C1E;
+  border: 1px solid rgba(15,110,86,0.2);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.msg-time {
+  font-size: 9px;
+  color: #8E8E93;
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+.msg-receipt {
+  font-size: 9px;
+  color: #8E8E93;
+  margin-top: 1px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ── Rich cards ── */
+.rich-card {
+  width: 248px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.rich-card-img {
+  width: 100%;
+  height: 110px;
+  display: block;
+}
+
+.rich-card-body {
+  padding: 11px 14px 12px;
+}
+
+.rich-card-eyebrow {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--pp-blue);
+  margin-bottom: 4px;
+}
+
+.rich-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1C1C1E;
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.rich-card-text {
+  font-size: 11px;
+  color: #6B7280;
+  line-height: 1.55;
+}
+
+.rich-card-divider {
+  height: 0.5px;
+  background: #E5E7EB;
+  margin: 0;
+}
+
+.rich-card-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.rca-btn {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--convey);
+  background: none;
+  border: none;
+  border-top: 0.5px solid #E5E7EB;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s;
+  font-family: inherit;
+}
+
+.rca-btn:first-child { border-top: none; }
+.rca-btn:hover { background: #F0FDF4; }
+.rca-btn.primary { color: var(--convey); font-weight: 700; }
+.rca-btn.destructive { color: #6B7280; }
+
+/* ── Video card ── */
+.video-card {
+  width: 220px;
+  background: #1C1C1E;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.video-thumb {
+  width: 100%;
+  height: 90px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-play {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.90);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  transition: transform 0.15s;
+}
+
+.video-card:hover .video-play { transform: scale(1.1); }
+
+.video-card-info {
+  padding: 8px 12px 10px;
+}
+
+.video-card-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #F2F2F7;
+  margin-bottom: 2px;
+}
+
+.video-card-meta {
+  font-size: 9px;
+  color: #8E8E93;
+}
+
+/* ── Image message ── */
+.img-message {
+  width: 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.img-message svg {
+  display: block;
+  width: 100%;
+  height: 130px;
+}
+
+/* ── Ticket card ── */
+.ticket-card {
+  width: 248px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+}
+
+.ticket-header {
+  background: linear-gradient(135deg, #0F4C81 0%, #1565C0 100%);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ticket-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.ticket-header-text { flex: 1; }
+
+.ticket-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+
+.ticket-id {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.ticket-status {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ticket-status.open {
+  background: rgba(245,158,11,0.2);
+  color: #FCD34D;
+  border: 1px solid rgba(245,158,11,0.4);
+}
+
+.ticket-status.closed {
+  background: rgba(5,150,105,0.2);
+  color: #6EE7B7;
+  border: 1px solid rgba(5,150,105,0.4);
+}
+
+.ticket-body {
+  padding: 11px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.ticket-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ticket-row-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9CA3AF;
+  width: 56px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.ticket-row-val {
+  font-size: 11px;
+  color: #374151;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.ticket-track-btn {
+  display: block;
+  margin: 0;
+  padding: 10px;
+  background: none;
+  border: none;
+  border-top: 0.5px solid #E5E7EB;
+  width: 100%;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--convey);
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.ticket-track-btn:hover { background: #F0FDF4; }
+
+/* ── Timeskip ── */
+.timeskip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  color: #8E8E93;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.timeskip-line {
+  flex: 1;
+  height: 0.5px;
+  background: #C7C7CC;
+}
+
+/* ── Typing indicator ── */
+.typing-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.typing-bubble {
+  display: flex;
+  gap: 4px;
+  padding: 10px 14px;
+  background: #E9E9EB;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+}
+
+.typing-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #8E8E93;
+  animation: tdot 1.3s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes tdot {
+  0%, 55%, 100% { transform: translateY(0); opacity: 0.5; }
+  27% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ── Status banner ── */
+.status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(5,150,105,0.12) 0%, rgba(15,110,86,0.12) 100%);
+  border: 1px solid rgba(5,150,105,0.3);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #059669;
+  margin: 4px 0;
+}
+
+.status-banner-icon {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #059669;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+/* ── Input bar ── */
+.input-bar {
+  background: rgba(242,242,247,0.95);
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+  padding: 8px 10px 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.input-field {
+  flex: 1;
+  background: white;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #8E8E93;
+}
+
+.input-send {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--pp-blue);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ── Controls ── */
+.controls-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.step-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.step-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.step-dot.done { background: rgba(255,255,255,0.35); }
+.step-dot.active { background: var(--convey-lt); width: 20px; border-radius: 3px; }
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  border: none;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.next-btn {
+  background: var(--convey);
+  color: white;
+  box-shadow: 0 4px 20px rgba(15,110,86,0.4);
+}
+.next-btn:hover:not(:disabled) { background: var(--convey-lt); box-shadow: 0 6px 28px rgba(15,110,86,0.5); }
+.next-btn:active { transform: scale(0.97); }
+.next-btn:disabled { background: #2D3748; box-shadow: none; color: #6B7280; cursor: default; }
+
+.prev-btn {
+  background: rgba(255,255,255,0.05);
+  color: #9CA3AF;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.prev-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); color: #E5E7EB; border-color: rgba(255,255,255,0.22); }
+.prev-btn:disabled { opacity: 0.3; cursor: default; }
+
+.step-counter {
+  font-size: 12px;
+  color: #6B7280;
+  font-variant-numeric: tabular-nums;
+  min-width: 72px;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.reset-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.reset-btn:hover { border-color: rgba(255,255,255,0.25); color: #D1D5DB; }
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.current-narr {
+  background: rgba(15,110,86,0.08);
+  border: 1px solid rgba(15,110,86,0.2);
+  border-radius: 12px;
+  padding: 14px 22px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  transition: opacity 0.3s;
+}
+.current-narr-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6EE7B7;
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+.current-narr-sub {
+  font-size: 12px;
+  color: #9CA3AF;
+  line-height: 1.55;
+}
+.kbd-hint {
+  font-size: 11px;
+  color: #374151;
+  margin-top: 2px;
+}
+.kbd-hint kbd {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 10px;
+  color: #6B7280;
+}
+
+/* ── Feature pills ── */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 700px;
+}
+
+.feat-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  font-size: 11px;
+  color: #6B7280;
+  transition: all 0.4s;
+  font-weight: 500;
+}
+
+.feat-pill.active {
+  border-color: rgba(15,110,86,0.4);
+  background: rgba(15,110,86,0.10);
+  color: #6EE7B7;
+}
+
+.feat-pill-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.feat-pill.active .feat-pill-dot { opacity: 1; }
+
+/* ── Progress bar ── */
+.progress-bar {
+  width: 100%;
+  max-width: 360px;
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--convey);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ── Right narrator ── */
+.narrator-panel {
+  width: 200px;
+  flex-shrink: 0;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.narr-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-left: 2px solid rgba(255,255,255,0.06);
+  padding-left: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.narr-item::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 14px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.06);
+  transition: all 0.2s;
+}
+
+.narr-item.active {
+  border-left-color: var(--convey);
+}
+
+.narr-item.active::before {
+  background: var(--convey);
+  border-color: var(--convey);
+}
+
+.narr-item.done::before {
+  background: rgba(15,110,86,0.5);
+  border-color: rgba(15,110,86,0.5);
+}
+
+.narr-item.done {
+  border-left-color: rgba(15,110,86,0.4);
+}
+
+.narr-item-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6B7280;
+  transition: color 0.2s;
+  line-height: 1.3;
+}
+
+.narr-item.active .narr-item-title { color: #E5E7EB; }
+.narr-item.done .narr-item-title { color: rgba(110,231,183,0.7); }
+
+.narr-item-sub {
+  font-size: 10px;
+  color: #4B5563;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.narr-item.active .narr-item-sub { color: #9CA3AF; }
+
+@media (max-width: 720px) {
+  .narrator-panel { display: none; }
+  .phone-stage { gap: 0; }
+}
+</style>
+
+<div class="page-header">
+  <div class="convey-brand">
+    <div class="convey-mark">CX</div>
+    Convey
+  </div>
+  <h1 class="page-title">Rich Communication Services Demo</h1>
+  <p class="page-subtitle">Street Light Repair Workflow · Pacific Power</p>
+  <div class="rcs-badge">
+    <div class="rcs-badge-dot"></div>
+    RCS Business Messaging
+  </div>
+</div>
+
+<div class="demo-stage">
+  <div class="phone-stage">
+
+    <!-- Left: timeline/narrator -->
+    <div class="narrator-panel" id="narrator-panel">
+      <!-- filled by JS -->
+    </div>
+
+    <!-- Phone -->
+    <div class="phone-wrap">
+      <div class="phone-glow" id="phone-glow"></div>
+      <div class="phone">
+        <div class="phone-btn-vol"></div>
+        <div class="phone-btn-power"></div>
+        <div class="phone-screen">
+          <div class="dynamic-island"></div>
+
+          <!-- Status bar -->
+          <div class="status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-icons">
+              <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor">
+                <rect x="0" y="4" width="3" height="7" rx="0.5" opacity="0.3"/>
+                <rect x="4" y="2.5" width="3" height="8.5" rx="0.5" opacity="0.5"/>
+                <rect x="8" y="1" width="3" height="10" rx="0.5" opacity="0.8"/>
+                <rect x="12" y="0" width="3" height="11" rx="0.5"/>
+              </svg>
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor">
+                <path d="M7.5 2.5C9.5 2.5 11.3 3.3 12.6 4.6L14 3.2C12.3 1.5 9.9 0.5 7.5 0.5C5.1 0.5 2.7 1.5 1 3.2L2.4 4.6C3.7 3.3 5.5 2.5 7.5 2.5Z" opacity="0.4"/>
+                <path d="M7.5 5.5C8.8 5.5 9.9 6 10.8 6.9L12.2 5.5C10.9 4.2 9.3 3.5 7.5 3.5C5.7 3.5 4.1 4.2 2.8 5.5L4.2 6.9C5.1 6 6.2 5.5 7.5 5.5Z" opacity="0.7"/>
+                <circle cx="7.5" cy="9.5" r="1.5"/>
+              </svg>
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35"/>
+                <rect x="2" y="2" width="18" height="8" rx="2" fill="currentColor"/>
+                <path d="M23 4v4a2 2 0 000-4z" fill="currentColor" fill-opacity="0.4"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Chat header -->
+          <div class="chat-header">
+            <div class="chat-back">‹</div>
+            <div class="chat-avatar">
+              <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" width="38" height="38">
+                <defs>
+                  <linearGradient id="ppbg" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#0D47A1"/>
+                    <stop offset="100%" stop-color="#1976D2"/>
+                  </linearGradient>
+                  <linearGradient id="ppray" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#FFF176"/>
+                    <stop offset="100%" stop-color="#FFD600"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="19" cy="19" r="19" fill="url(#ppbg)"/>
+                <!-- Sun arc top -->
+                <path d="M9 14 Q19 6 29 14" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                <!-- Lightning bolt -->
+                <polygon points="21,7 13,20 18.5,20 17,31 25,18 19.5,18" fill="url(#ppray)"/>
+                <!-- Small tagline dots -->
+                <circle cx="11" cy="29" r="1.2" fill="rgba(255,255,255,0.4)"/>
+                <circle cx="19" cy="31" r="1.2" fill="rgba(255,255,255,0.4)"/>
+                <circle cx="27" cy="29" r="1.2" fill="rgba(255,255,255,0.4)"/>
+              </svg>
+            </div>
+            <div class="chat-info">
+              <div class="chat-name">
+                Pacific Power
+                <span class="chat-verified">
+                  <span class="chat-verified-icon">
+                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                      <path d="M1.5 4L3 5.5L6.5 2.5" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  Verified Business
+                </span>
+              </div>
+              <div class="chat-sub">RCS Business · Powered by Convey</div>
+            </div>
+            <div class="chat-video-btn">
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+                <path d="M10 1H2a1 1 0 00-1 1v8a1 1 0 001 1h8a1 1 0 001-1V8.5l4 2v-9l-4 2V2a1 1 0 00-1-1z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Thread -->
+          <div class="thread" id="thread"></div>
+
+          <!-- Input bar -->
+          <div class="input-bar">
+            <div class="input-field">Reply to Pacific Power…</div>
+            <div class="input-send">↑</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: empty space for balance on large screens -->
+    <div style="width:200px" class="hide-mobile"></div>
+
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-wrap">
+    <div class="step-dots" id="step-dots"></div>
+    <div class="controls-row">
+      <button class="nav-btn prev-btn" id="prev-btn" disabled>← Prev</button>
+      <div class="step-counter" id="step-counter">0 / 11</div>
+      <button class="nav-btn next-btn" id="next-btn">Next →</button>
+    </div>
+    <div class="current-narr" id="current-narr" style="display:none">
+      <div class="current-narr-title" id="current-narr-title"></div>
+      <div class="current-narr-sub" id="current-narr-sub"></div>
+    </div>
+    <button class="reset-btn" id="reset-btn">↺ Reset</button>
+    <div class="kbd-hint">Use <kbd>Enter</kbd> <kbd>→</kbd> or <kbd>Space</kbd> for next &nbsp;·&nbsp; <kbd>←</kbd> for previous</div>
+  </div>
+
+  <!-- Feature pills -->
+  <div class="features" id="features">
+    <div class="feat-pill" data-feat="verified"><div class="feat-pill-dot"></div>Verified Sender</div>
+    <div class="feat-pill" data-feat="rich-cards"><div class="feat-pill-dot"></div>Rich Cards</div>
+    <div class="feat-pill" data-feat="video"><div class="feat-pill-dot"></div>Rich Media</div>
+    <div class="feat-pill" data-feat="two-way"><div class="feat-pill-dot"></div>2-Way Conversation</div>
+    <div class="feat-pill" data-feat="media"><div class="feat-pill-dot"></div>Customer Media Sharing</div>
+    <div class="feat-pill" data-feat="ticket"><div class="feat-pill-dot"></div>System Integration</div>
+    <div class="feat-pill" data-feat="actions"><div class="feat-pill-dot"></div>Action Buttons</div>
+    <div class="feat-pill" data-feat="closure"><div class="feat-pill-dot"></div>Case Closure</div>
+  </div>
+</div>
+
+<script>
+// ── SVG Assets ──────────────────────────────────────────────────────────────
+
+const SVG_MAP = `<svg viewBox="0 0 248 110" xmlns="http://www.w3.org/2000/svg">
+  <rect fill="#EDE9E0" width="248" height="110"/>
+  <rect y="42" width="248" height="10" fill="#D5CEC2"/>
+  <rect y="74" width="248" height="10" fill="#D5CEC2"/>
+  <rect x="56" width="10" height="110" fill="#D5CEC2"/>
+  <rect x="118" width="10" height="110" fill="#D5CEC2"/>
+  <rect x="180" width="10" height="110" fill="#D5CEC2"/>
+  <rect fill="#F8F5F0" x="66" y="52" width="52" height="22"/>
+  <rect fill="#F8F5F0" x="66" y="0" width="52" height="42"/>
+  <rect fill="rgba(21,101,192,0.15)" x="56" y="42" width="72" height="42" rx="2"/>
+  <rect fill="none" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4 2" x="56" y="42" width="72" height="42" rx="2"/>
+  <text x="92" y="60" text-anchor="middle" font-size="7" fill="#1565C0" font-weight="700" font-family="system-ui">OAK / MAPLE</text>
+  <text x="92" y="70" text-anchor="middle" font-size="6.5" fill="#1565C0" font-family="system-ui">DISTRICT</text>
+  <circle cx="64" cy="50" r="4" fill="#F59E0B"/>
+  <circle cx="64" cy="50" r="2" fill="#FDE68A"/>
+  <circle cx="126" cy="50" r="4" fill="#F59E0B"/>
+  <circle cx="126" cy="50" r="2" fill="#FDE68A"/>
+  <circle cx="64" cy="82" r="4" fill="#F59E0B"/>
+  <circle cx="64" cy="82" r="2" fill="#FDE68A"/>
+  <circle cx="126" cy="82" r="5" fill="#EF4444" opacity="0.9"/>
+  <circle cx="126" cy="82" r="2.5" fill="#FCA5A5"/>
+  <text x="126" y="100" text-anchor="middle" font-size="7" fill="#EF4444" font-weight="700" font-family="system-ui">! OUT</text>
+  <text x="200" y="60" text-anchor="middle" font-size="7" fill="#9CA3AF" font-family="system-ui">⚡</text>
+  <text x="200" y="70" text-anchor="middle" font-size="6" fill="#B0A898" font-family="system-ui">Substation</text>
+  <line x1="0" y1="42" x2="248" y2="42" stroke="#C5BDB1" stroke-width="0.5"/>
+  <line x1="0" y1="52" x2="248" y2="52" stroke="#C5BDB1" stroke-width="0.5"/>
+  <line x1="0" y1="74" x2="248" y2="74" stroke="#C5BDB1" stroke-width="0.5"/>
+  <line x1="0" y1="84" x2="248" y2="84" stroke="#C5BDB1" stroke-width="0.5"/>
+</svg>`;
+
+const SVG_BROKEN_LIGHT = `<svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="nite" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0D1117"/>
+      <stop offset="100%" stop-color="#12202E"/>
+    </linearGradient>
+  </defs>
+  <rect fill="url(#nite)" width="220" height="130"/>
+  <rect y="112" width="220" height="18" fill="#1A2028"/>
+  <rect y="108" width="220" height="5" fill="#212B35"/>
+  <rect x="106" y="40" width="6" height="72" fill="#2D3748" rx="1"/>
+  <rect x="92" y="40" width="20" height="5" fill="#2D3748" rx="1"/>
+  <rect x="94" y="32" width="14" height="4" fill="#374151" rx="1"/>
+  <g transform="translate(80,18) rotate(22,18,14)">
+    <rect x="0" y="0" width="32" height="20" fill="#374151" rx="4"/>
+    <rect x="3" y="3" width="26" height="14" fill="#1F2937" rx="2"/>
+    <line x1="3" y1="3" x2="18" y2="17" stroke="#4B5563" stroke-width="0.8"/>
+    <line x1="18" y1="3" x2="10" y2="17" stroke="#4B5563" stroke-width="0.8"/>
+    <line x1="10" y1="3" x2="24" y2="15" stroke="#4B5563" stroke-width="0.6" opacity="0.5"/>
+  </g>
+  <circle cx="30" cy="18" r="1" fill="white" opacity="0.5"/>
+  <circle cx="190" cy="12" r="1.2" fill="white" opacity="0.7"/>
+  <circle cx="155" cy="28" r="0.8" fill="white" opacity="0.4"/>
+  <circle cx="60" cy="35" r="0.9" fill="white" opacity="0.6"/>
+  <circle cx="200" cy="40" r="0.7" fill="white" opacity="0.3"/>
+  <text x="110" y="126" text-anchor="middle" font-size="8" fill="#6B7280" font-family="system-ui">Oak St &amp; 5th Ave · Reported out of service</text>
+</svg>`;
+
+const SVG_FIXED_LIGHT = `<svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="nite2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0D1117"/>
+      <stop offset="100%" stop-color="#12202E"/>
+    </linearGradient>
+    <radialGradient id="lampglow" cx="0.5" cy="1" r="0.8">
+      <stop offset="0%" stop-color="#FEF3C7" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#FDE68A" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FDE68A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="grndglow" cx="0.5" cy="0.3" r="0.5">
+      <stop offset="0%" stop-color="#FEF3C7" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FEF3C7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect fill="url(#nite2)" width="220" height="130"/>
+  <ellipse cx="109" cy="38" rx="72" ry="55" fill="url(#lampglow)"/>
+  <ellipse cx="109" cy="114" rx="48" ry="12" fill="url(#grndglow)"/>
+  <rect y="112" width="220" height="18" fill="#1A2028"/>
+  <rect y="108" width="220" height="5" fill="#212B35"/>
+  <rect x="106" y="40" width="6" height="72" fill="#2D3748" rx="1"/>
+  <rect x="92" y="40" width="20" height="5" fill="#2D3748" rx="1"/>
+  <rect x="94" y="32" width="14" height="4" fill="#374151" rx="1"/>
+  <rect x="88" y="20" width="40" height="22" fill="#374151" rx="5"/>
+  <rect x="91" y="23" width="34" height="16" fill="#FFFBEB" rx="3"/>
+  <ellipse cx="108" cy="31" rx="11" ry="5" fill="white" opacity="0.85"/>
+  <ellipse cx="108" cy="31" rx="5" ry="3" fill="white"/>
+  <circle cx="30" cy="15" r="0.9" fill="white" opacity="0.4"/>
+  <circle cx="190" cy="10" r="1.1" fill="white" opacity="0.5"/>
+  <circle cx="170" cy="30" r="0.7" fill="white" opacity="0.3"/>
+  <text x="110" y="126" text-anchor="middle" font-size="8" fill="#6EE7B7" font-weight="600" font-family="system-ui">Oak St &amp; 5th Ave · Restored ✓</text>
+</svg>`;
+
+const SVG_VIDEO_THUMB = `<svg viewBox="0 0 220 90" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="vbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F4C81"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+  </defs>
+  <rect fill="url(#vbg)" width="220" height="90"/>
+  <rect fill="rgba(255,255,255,0.04)" x="10" y="10" width="200" height="70" rx="6"/>
+  <circle cx="50" cy="45" r="18" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="80" cy="35" r="12" fill="rgba(255,255,255,0.05)"/>
+  <rect x="80" y="25" width="130" height="8" rx="3" fill="rgba(255,255,255,0.15)"/>
+  <rect x="80" y="38" width="100" height="6" rx="3" fill="rgba(255,255,255,0.08)"/>
+  <rect x="80" y="50" width="80" height="6" rx="3" fill="rgba(255,255,255,0.06)"/>
+  <text x="110" y="78" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)" font-family="system-ui">STREET LIGHT MAINTENANCE · 2:14</text>
+</svg>`;
+
+// ── Conversation Data ────────────────────────────────────────────────────────
+
+const MSGS = [
+  {
+    id: 1,
+    sender: 'utility',
+    type: 'rich-card',
+    time: '9:41 AM',
+    card: {
+      image: SVG_MAP,
+      eyebrow: 'Maintenance Alert',
+      title: 'Scheduled Street Light Repairs',
+      text: 'Our crews will be performing street light maintenance in the <b>Oak/Maple District</b> on June 28, 2026 between 9 AM – 3 PM. Brief interruptions may occur.',
+      actions: [],
+    },
+    features: ['verified', 'rich-cards'],
+    glow: 'rgba(21,101,192,0.3)',
+    narr: {
+      title: 'Utility sends maintenance alert',
+      sub: 'Pacific Power pushes a branded rich card — map, date, and plain-language details. No app required.',
+    },
+  },
+  {
+    id: 2,
+    sender: 'utility',
+    type: 'video-card',
+    time: '9:41 AM',
+    card: {
+      image: SVG_VIDEO_THUMB,
+      title: 'What to Expect During Maintenance',
+      meta: 'Pacific Power · 2 min 14 sec',
+    },
+    features: ['rich-cards', 'video'],
+    glow: 'rgba(21,101,192,0.3)',
+    narr: {
+      title: 'Rich media attachment',
+      sub: 'A short explainer video surfaces inline — no link to click, no app to open.',
+    },
+  },
+  {
+    id: 3,
+    sender: 'customer',
+    type: 'text',
+    time: '9:44 AM',
+    text: "Hey — there’s also a street light on Oak St & 5th Ave that’s been completely out for 3 weeks. Can someone check it?",
+    features: ['two-way'],
+    glow: 'rgba(21,101,192,0.2)',
+    narr: {
+      title: 'Customer replies directly',
+      sub: 'No separate app, no web form. The customer reports a new issue right in the message thread.',
+    },
+  },
+  {
+    id: 4,
+    sender: 'customer',
+    type: 'image',
+    time: '9:44 AM',
+    image: SVG_BROKEN_LIGHT,
+    caption: 'Photo of the broken light',
+    features: ['two-way', 'media'],
+    glow: 'rgba(21,101,192,0.2)',
+    narr: {
+      title: 'Customer shares a photo',
+      sub: 'RCS supports rich media from the customer too — pictures, location, and more.',
+    },
+  },
+  {
+    id: 5,
+    sender: 'utility',
+    type: 'text',
+    time: '9:45 AM',
+    text: 'Thanks for the photo! We\'ve logged a new repair request for Oak St & 5th Ave. Our crew will assess it shortly. 🙏',
+    features: ['two-way'],
+    glow: 'rgba(217,119,6,0.3)',
+    narr: {
+      title: 'Instant acknowledgment',
+      sub: 'The utility confirms receipt in seconds — no hold music, no email.',
+    },
+  },
+  {
+    id: 6,
+    sender: 'utility',
+    type: 'ticket-card',
+    time: '9:45 AM',
+    ticket: {
+      id: 'SR-48291',
+      location: 'Oak St & 5th Ave',
+      status: 'Open',
+      created: 'Jun 24, 2026 · 9:45 AM',
+      priority: 'Standard',
+    },
+    features: ['rich-cards', 'ticket'],
+    glow: 'rgba(217,119,6,0.3)',
+    narr: {
+      title: 'Ticket surfaces in the thread',
+      sub: 'A live system ticket card — not a link to copy-paste. Track status right here.',
+    },
+  },
+  {
+    id: 7,
+    sender: 'system',
+    type: 'timeskip',
+    text: 'Next day · Jun 25, 2026',
+    features: [],
+    glow: 'rgba(217,119,6,0.25)',
+    narr: null,
+  },
+  {
+    id: 8,
+    sender: 'utility',
+    type: 'rich-card',
+    time: '7:12 AM',
+    card: {
+      image: SVG_FIXED_LIGHT,
+      eyebrow: 'Repair Complete ✓',
+      title: 'Street Light Restored',
+      text: 'The street light at <b>Oak St & 5th Ave</b> has been repaired and restored to service. Thank you for helping keep your community safe!',
+      actions: ['Close Case', '⭐ Rate Service'],
+    },
+    features: ['rich-cards', 'actions'],
+    glow: 'rgba(5,150,105,0.35)',
+    narr: {
+      title: 'Completion with photo proof',
+      sub: 'The crew\'s completion photo surfaces in-thread. The customer sees the fix, not just a status update.',
+    },
+  },
+  {
+    id: 9,
+    sender: 'customer',
+    type: 'button-reply',
+    time: '7:15 AM',
+    text: '☑ Close Case',
+    features: ['actions', 'closure'],
+    glow: 'rgba(5,150,105,0.3)',
+    narr: {
+      title: 'One-tap case closure',
+      sub: 'The customer taps Close Case directly in the message. No portal, no hold time.',
+    },
+  },
+  {
+    id: 10,
+    sender: 'utility',
+    type: 'text',
+    time: '7:15 AM',
+    text: 'Case #SR-48291 is now closed. Thanks for the report — your neighborhood is brighter for it. 🌟',
+    features: ['closure'],
+    glow: 'rgba(5,150,105,0.3)',
+    narr: {
+      title: 'Case confirmed closed',
+      sub: 'Closed in the thread, closed in the system. Fully automated, fully traceable.',
+    },
+  },
+  {
+    id: 11,
+    sender: 'system',
+    type: 'status-banner',
+    text: 'Case SR-48291 · Closed',
+    features: ['closure'],
+    glow: 'rgba(5,150,105,0.25)',
+    narr: null,
+  },
+];
+
+// ── Narrator steps (messages that have narr) ────────────────────────────────
+const NARR_STEPS = MSGS.filter(m => m.narr);
+
+// ── State ────────────────────────────────────────────────────────────────────
+let currentStep = -1; // index into MSGS (-1 = before start)
+
+// ── Render helpers ───────────────────────────────────────────────────────────
+
+function renderRichCard(card, sender) {
+  const acts = card.actions && card.actions.length
+    ? `<div class="rich-card-divider"></div><div class="rich-card-actions">${
+        card.actions.map(a => `<button class="rca-btn${a.includes('Close') ? ' primary' : a.includes('Rate') ? ' destructive' : ''}" onclick="handleAction('${a}')">${a}</button>`).join('')
+      }</div>`
+    : '';
+  return `<div class="rich-card">
+    <img class="rich-card-img" src="data:image/svg+xml,${encodeURIComponent(card.image)}" alt=""/>
+    <div class="rich-card-body">
+      ${card.eyebrow ? `<div class="rich-card-eyebrow">${card.eyebrow}</div>` : ''}
+      <div class="rich-card-title">${card.title}</div>
+      <div class="rich-card-text">${card.text}</div>
+    </div>
+    ${acts}
+  </div>`;
+}
+
+function renderVideoCard(card) {
+  return `<div class="video-card">
+    <div class="video-thumb">
+      <img src="data:image/svg+xml,${encodeURIComponent(card.image)}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+      <div class="video-play" style="position:absolute">▶</div>
+    </div>
+    <div class="video-card-info">
+      <div class="video-card-title">${card.title}</div>
+      <div class="video-card-meta">${card.meta}</div>
+    </div>
+  </div>`;
+}
+
+function renderTicketCard(ticket) {
+  return `<div class="ticket-card">
+    <div class="ticket-header">
+      <div class="ticket-icon">🎫</div>
+      <div class="ticket-header-text">
+        <div class="ticket-label">Repair Ticket</div>
+        <div class="ticket-id">#${ticket.id}</div>
+      </div>
+      <div class="ticket-status open">Open</div>
+    </div>
+    <div class="ticket-body">
+      <div class="ticket-row">
+        <div class="ticket-row-label">Location</div>
+        <div class="ticket-row-val">${ticket.location}</div>
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-row-label">Created</div>
+        <div class="ticket-row-val">${ticket.created}</div>
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-row-label">Priority</div>
+        <div class="ticket-row-val">${ticket.priority}</div>
+      </div>
+    </div>
+    <button class="ticket-track-btn">Track Status →</button>
+  </div>`;
+}
+
+function renderImageMsg(msg) {
+  return `<div class="img-message">
+    <img src="data:image/svg+xml,${encodeURIComponent(msg.image)}" alt="${msg.caption || ''}" style="width:100%;height:130px;display:block;object-fit:cover;"/>
+  </div>`;
+}
+
+function buildMessageEl(msg) {
+  const row = document.createElement('div');
+  row.className = 'msg-row from-' + msg.sender + (msg.type === 'button-reply' ? ' button-reply' : '');
+  row.dataset.id = msg.id;
+
+  let inner = '';
+
+  if (msg.type === 'rich-card') {
+    inner = renderRichCard(msg.card, msg.sender);
+    if (msg.time) inner += `<div class="msg-time">${msg.time}</div>`;
+  } else if (msg.type === 'video-card') {
+    inner = renderVideoCard(msg.card);
+    if (msg.time) inner += `<div class="msg-time">${msg.time}</div>`;
+  } else if (msg.type === 'ticket-card') {
+    inner = renderTicketCard(msg.ticket);
+    if (msg.time) inner += `<div class="msg-time">${msg.time}</div>`;
+  } else if (msg.type === 'image') {
+    inner = renderImageMsg(msg);
+    if (msg.time) inner += `<div class="msg-time msg-receipt">✓✓ ${msg.time}</div>`;
+  } else if (msg.type === 'text') {
+    inner = `<div class="bubble">${msg.text}</div>`;
+    if (msg.sender === 'customer') {
+      inner += `<div class="msg-receipt">✓✓ Delivered · ${msg.time}</div>`;
+    } else {
+      inner += `<div class="msg-time">${msg.time}</div>`;
+    }
+  } else if (msg.type === 'button-reply') {
+    inner = `<div class="bubble">${msg.text}</div>`;
+    inner += `<div class="msg-receipt">✓✓ Delivered · ${msg.time}</div>`;
+  } else if (msg.type === 'timeskip') {
+    row.className = '';
+    inner = `<div class="timeskip"><div class="timeskip-line"></div>${msg.text}<div class="timeskip-line"></div></div>`;
+  } else if (msg.type === 'status-banner') {
+    row.className = '';
+    inner = `<div class="status-banner"><div class="status-banner-icon">✓</div>${msg.text}</div>`;
+  }
+
+  row.innerHTML = inner;
+  return row;
+}
+
+function showTyping() {
+  const thread = document.getElementById('thread');
+  const el = document.createElement('div');
+  el.className = 'typing-row';
+  el.id = 'typing-indicator';
+  el.innerHTML = `<div class="typing-bubble"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  thread.appendChild(el);
+  thread.scrollTop = thread.scrollHeight;
+  return el;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+// ── Feature highlights ───────────────────────────────────────────────────────
+function highlightFeatures(features) {
+  document.querySelectorAll('.feat-pill').forEach(p => {
+    const f = p.dataset.feat;
+    if (features.includes(f)) {
+      p.classList.add('active');
+    } else {
+      p.classList.remove('active');
+    }
+  });
+}
+
+// ── Glow ─────────────────────────────────────────────────────────────────────
+function setGlow(color) {
+  document.getElementById('phone-glow').style.setProperty('--glow-color', color || 'transparent');
+  document.getElementById('phone-glow').style.background =
+    `radial-gradient(ellipse at center, ${color} 0%, transparent 70%)`;
+}
+
+// ── Narrator ─────────────────────────────────────────────────────────────────
+let narratorBuilt = false;
+
+function buildNarrator() {
+  const panel = document.getElementById('narrator-panel');
+  panel.innerHTML = NARR_STEPS.map((m, i) => `
+    <div class="narr-item" data-narr="${i}" onclick="jumpToMsg(${m.id})">
+      <div>
+        <div class="narr-item-title">${m.narr.title}</div>
+        <div class="narr-item-sub">${m.narr.sub}</div>
+      </div>
+    </div>
+  `).join('');
+  narratorBuilt = true;
+}
+
+function updateNarrator(msgId) {
+  const idx = NARR_STEPS.findIndex(m => m.id === msgId);
+  document.querySelectorAll('.narr-item').forEach((el, i) => {
+    el.classList.remove('active', 'done');
+    if (i < idx) el.classList.add('done');
+    else if (i === idx) el.classList.add('active');
+  });
+}
+
+// ── Step dots ────────────────────────────────────────────────────────────────
+function buildDots() {
+  const container = document.getElementById('step-dots');
+  const contentMsgs = MSGS.filter(m => m.type !== 'timeskip' && m.type !== 'status-banner');
+  container.innerHTML = contentMsgs.map((m, i) =>
+    `<div class="step-dot" data-msg="${m.id}" onclick="jumpToMsg(${m.id})"></div>`
+  ).join('');
+}
+
+function updateDots(activeId) {
+  const contentMsgs = MSGS.filter(m => m.type !== 'timeskip' && m.type !== 'status-banner');
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    const msgId = contentMsgs[i].id;
+    dot.classList.remove('active', 'done');
+    if (msgId < activeId) dot.classList.add('done');
+    else if (msgId === activeId) dot.classList.add('active');
+  });
+}
+
+// ── Playback ─────────────────────────────────────────────────────────────────
+
+let typingTimer = null;
+
+function showMsgAtIndex(idx) {
+  const msg = MSGS[idx];
+  if (!msg) return;
+  const thread = document.getElementById('thread');
+  const existing = thread.querySelector(`[data-id="${msg.id}"]`);
+  if (existing) return;
+  const el = buildMessageEl(msg);
+  thread.appendChild(el);
+  thread.scrollTop = thread.scrollHeight;
+  if (msg.glow) setGlow(msg.glow);
+  if (msg.features) highlightFeatures(msg.features);
+  if (msg.narr) updateNarrator(msg.id);
+  updateDots(msg.id);
+  updateProgress(idx + 1);
+  currentStep = idx;
+  updateCurrentNarr(msg);
+  updateControls();
+}
+
+function showNext() {
+  const nextIdx = currentStep + 1;
+  if (nextIdx >= MSGS.length) return;
+  const nextMsg = MSGS[nextIdx];
+  const useTyping = nextMsg.sender === 'utility' && nextMsg.type !== 'timeskip';
+
+  document.getElementById('next-btn').disabled = true;
+
+  if (useTyping) {
+    showTyping();
+    typingTimer = setTimeout(() => {
+      removeTyping();
+      showMsgAtIndex(nextIdx);
+    }, 420);
+  } else {
+    showMsgAtIndex(nextIdx);
+  }
+}
+
+function showPrev() {
+  if (currentStep < 0) return;
+  clearTimeout(typingTimer);
+  removeTyping();
+
+  const thread = document.getElementById('thread');
+  const lastEl = thread.querySelector(`[data-id="${MSGS[currentStep].id}"]`);
+  if (lastEl) lastEl.remove();
+
+  currentStep -= 1;
+
+  if (currentStep >= 0) {
+    const prevMsg = MSGS[currentStep];
+    if (prevMsg.glow) setGlow(prevMsg.glow);
+    if (prevMsg.features) highlightFeatures(prevMsg.features);
+    if (prevMsg.narr) updateNarrator(prevMsg.id);
+    updateDots(prevMsg.id);
+    updateProgress(currentStep + 1);
+    updateCurrentNarr(prevMsg);
+  } else {
+    setGlow('rgba(21,101,192,0.15)');
+    highlightFeatures([]);
+    updateNarrator(-1);
+    buildDots();
+    updateProgress(0);
+    updateCurrentNarr(null);
+  }
+  updateControls();
+}
+
+function updateCurrentNarr(msg) {
+  const card = document.getElementById('current-narr');
+  const title = document.getElementById('current-narr-title');
+  const sub = document.getElementById('current-narr-sub');
+
+  // Walk back to find a msg with narr if current msg has none
+  let narrMsg = msg;
+  if (msg && !msg.narr) {
+    // find most recent narr in shown msgs
+    for (let i = currentStep; i >= 0; i--) {
+      if (MSGS[i].narr) { narrMsg = MSGS[i]; break; }
+    }
+  }
+
+  if (narrMsg && narrMsg.narr) {
+    title.textContent = narrMsg.narr.title;
+    sub.textContent = narrMsg.narr.sub;
+    card.style.display = '';
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+function updateControls() {
+  document.getElementById('prev-btn').disabled = currentStep < 0;
+  document.getElementById('next-btn').disabled = currentStep >= MSGS.length - 1;
+  const shown = currentStep + 1;
+  document.getElementById('step-counter').textContent = shown + ' / ' + MSGS.length;
+}
+
+function updateProgress(shown) {
+  const pct = Math.round((shown / MSGS.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function resetDemo() {
+  clearTimeout(typingTimer);
+  removeTyping();
+  currentStep = -1;
+  document.getElementById('thread').innerHTML = '';
+  document.getElementById('progress-fill').style.width = '0%';
+  setGlow('rgba(21,101,192,0.15)');
+  highlightFeatures([]);
+  buildDots();
+  updateNarrator(-1);
+  updateCurrentNarr(null);
+  updateControls();
+}
+
+function jumpToMsg(id) {
+  clearTimeout(typingTimer);
+  removeTyping();
+  const thread = document.getElementById('thread');
+  thread.innerHTML = '';
+  currentStep = -1;
+  const idx = MSGS.findIndex(m => m.id === id);
+  for (let i = 0; i <= idx; i++) showMsgAtIndex(i);
+  updateControls();
+}
+
+function handleAction(action) {
+  if (action.includes('Close Case') && currentStep >= 7) {
+    const idx9 = MSGS.findIndex(m => m.id === 9);
+    if (currentStep < idx9) jumpToMsg(9);
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildDots();
+  buildNarrator();
+  setGlow('rgba(21,101,192,0.15)');
+  updateControls();
+
+  document.getElementById('next-btn').addEventListener('click', showNext);
+  document.getElementById('prev-btn').addEventListener('click', showPrev);
+  document.getElementById('reset-btn').addEventListener('click', resetDemo);
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      showNext();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      showPrev();
+    }
+  });
+});
+</script>
